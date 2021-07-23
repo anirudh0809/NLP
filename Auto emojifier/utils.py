@@ -53,3 +53,39 @@ def convert_to_one_hot(Y, C):
     Y = np.eye(C)[Y.reshape(-1)]
     return Y
 
+emoji_dictionary = {"0": ":blue_heart:",   
+                    "1": ":football:",
+                    "2": ":grin:",
+                    "3": ":disappointed:",
+                    "4": ":fork:"}
+
+
+def change_to_emoji(text):
+    return emoji.emojize(emoji_dictionary[str(text)],use_aliases=True)
+
+def predict(X,Y,weight,bias,map):
+    m = X.shape[0]
+    prediction = np.zeros((m,1))
+
+    for i in range(m):
+        words = X[i].lower().split()
+        average = np.zeros((50,1))
+
+        for word in words:
+            average += map[word]
+        average = average/len(words)
+
+
+        #forward pass
+        Z = np.dot(weight,average) + bias
+        A = softmax_function(Z)
+        prediction[i]= np.argmax(A)
+
+    print("Accuracy ----->" + str(np.mean((prediction[:] == Y.reshape(Y.shape[0],1)[:]))))
+
+    return prediction
+
+
+
+            
+
