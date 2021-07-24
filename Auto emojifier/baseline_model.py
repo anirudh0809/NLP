@@ -27,6 +27,11 @@ def calculate_avg_sentence(body,map):
 
     return average
 
+def baseline_model(X,Y,map,lr=0.01,iter=500):
+    
+    return prediction, weight, bais
+
+
 def main():
     Xtrain,Ytrain = csv_loader('/Users/anirudhsharma/Documents/NLP/Data/train.csv')
     Xtest,Ytest = csv_loader('/Users/anirudhsharma/Documents/NLP/Data/test.csv')
