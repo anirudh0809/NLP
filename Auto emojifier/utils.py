@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd 
 import emoji 
 import seaborn as sns 
+import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 def glove_vector_loader(file):
@@ -43,9 +44,9 @@ def csv_loader(file_name):
             text.append(row[0])
             emoticon.append(row[1])
 
-    X= np.array(text)
-    Y=np.array(emoticon)
-    return X.Y
+        X= np.array(text)
+        Y=np.array(emoticon).astype(int)
+    return X,Y
 
 
 
@@ -84,6 +85,33 @@ def predict(X,Y,weight,bias,map):
     print("Accuracy ----->" + str(np.mean((prediction[:] == Y.reshape(Y.shape[0],1)[:]))))
 
     return prediction
+
+def display_predictions(X,prediction):
+    for i in range(X.shape[0]):
+        print(X[i],change_to_emoji(int(prediction[i])))
+
+
+
+def confusion_matrix(y_original,y_predicted):
+    title = 'Confusion Matrix'
+    cmap= plt.cm.gray_r
+
+    confusion_matrix_df = pd.crosstab(y_original,y_predicted.reshape(y_predicted.shape[0],)
+                                        ,rownames=['Actual'],colnames=['Predicted'],margins=True)
+    
+    normalised_matrix = confusion_matrix_df/confusion_matrix_df.sum(axis=1)
+
+    plt.matshow(confusion_matrix_df,cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(confusion_matrix_df.columns))
+    plt.xticks(tick_marks,confusion_matrix_df.columns,rotation=45)
+    plt.yticks(tick_marks,confusion_matrix_df.index)
+    plt.ylabel(confusion_matrix_df.index.name)
+    plt.xlabel(confusion_matrix_df.index.name)
+
+
+
 
 
 
