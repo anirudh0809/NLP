@@ -28,8 +28,8 @@ def calculate_avg_sentence(body,map):
     return average
 
 def baseline_model(X,Y,map,lr=0.01,iter=500):
-    
-    return prediction, weight, bais
+
+    return prediction, weight, bias
 
 
 def main():
@@ -75,5 +75,5 @@ def main():
 
 
 
-    
-baseline()
+if __name__ == '__main__':
+    main()
