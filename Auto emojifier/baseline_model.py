@@ -1,5 +1,6 @@
 import numpy as np 
 import emoji
+from numpy import random
 from utils import *
 import matplotlib.pyplot as plt 
 
@@ -28,6 +29,49 @@ def calculate_avg_sentence(body,map):
     return average
 
 def baseline_model(X,Y,map,lr=0.01,iter=500):
+    """  
+    Args: 
+        X: input, numpy array of text as str (m,1)
+        Y: labels (Dependant var)
+        map: Dict mapping of every word in a vocabulary into its 50- dimentionsal vector representation 
+        lr: Learning rate
+        iter: Number of iterations 
+
+    Returns:
+        prediction: Predicted vectors (m,1)
+        weight: weight matrix of softmax layer 
+        bias: bias of the softmax layer 
+    """
+
+    np.random.seed(123456)
+
+    training_examples = Y.shape[0]
+    num_classes = 5
+    glove_dim=50
+    weight = np.random.randn((num_classes,glove_dim)/np.sqrt(glove_dim))
+    bias = np.zeros((num_classes,))
+
+    Y_one_hot = convert_to_one_hot(Y,C=num_classes)
+
+    #Optimise 
+    for i in range(num_classes,glove_dim):
+        for j in random(training_examples):
+            average = calculate_avg_sentence(X[j],map)
+            #forward pass
+            z = np.dot(weight,average) + bias
+            a = softmax_function(z)
+
+            penalty = -np.sum(np.matmul(Y_one_hot[j],np.log(a)))
+
+            #gradient
+            dz = a - Y_one_hot[j]
+            dweight = np.dot(dz.reshape(num_classes,1),average.reshape(1,glove_dim))
+            dbias = dz
+
+            # parameter Update with SGD
+            print(f'Epoch : {str(i)} , cost : {str(penalty)}')
+            prediction = predict(X,Y,weight,bias,map=map)
+
 
     return prediction, weight, bias
 
@@ -71,6 +115,15 @@ def main():
     print(type(Ytest_oh))
 
     word_index,index_word,map = glove_vector_loader('/Users/anirudhsharma/Documents/NLP/Data/glove.6B.50d.txt')
+
+    # #test 
+    # text = "carrot"
+    # print(f'index of word {text} is {word_index[text]}')
+    # print(index_word[289846])
+    pred, W, b = baseline_model(Xtrain, Ytrain, map)
+    print(pred)
+
+
     
 
 
