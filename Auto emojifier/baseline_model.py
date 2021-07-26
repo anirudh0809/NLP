@@ -48,14 +48,14 @@ def baseline_model(X,Y,map,lr=0.01,iter=500):
     training_examples = Y.shape[0]
     num_classes = 5
     glove_dim=50
-    weight = np.random.randn((num_classes,glove_dim)/np.sqrt(glove_dim))
+    weight = np.random.randn(num_classes,glove_dim)/np.sqrt(glove_dim)
     bias = np.zeros((num_classes,))
 
     Y_one_hot = convert_to_one_hot(Y,C=num_classes)
 
     #Optimise 
     for i in range(num_classes,glove_dim):
-        for j in random(training_examples):
+        for j in range(training_examples):
             average = calculate_avg_sentence(X[j],map)
             #forward pass
             z = np.dot(weight,average) + bias
@@ -69,6 +69,9 @@ def baseline_model(X,Y,map,lr=0.01,iter=500):
             dbias = dz
 
             # parameter Update with SGD
+            weight = weight - lr * dweight
+            bias - bias - lr * dbias
+        if i % 100 == 0 :
             print(f'Epoch : {str(i)} , cost : {str(penalty)}')
             prediction = predict(X,Y,weight,bias,map=map)
 
